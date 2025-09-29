@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Animasi Kado Ulang Tahun</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        overflow: hidden;
+      }
+
+      /* Kado */
+      .gift-box {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        background: #ff4081;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        animation: bounce 2s infinite;
+        z-index: 10;
+      }
+
+      .gift-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 90px;
+        width: 20px;
+        height: 200px;
+        background: #fff;
+      }
+
+      .gift-box::after {
+        content: "";
+        position: absolute;
+        top: 90px;
+        left: 0;
+        width: 200px;
+        height: 20px;
+        background: #fff;
+      }
+
+      .lid {
+        position: absolute;
+        top: -40px;
+        left: -10px;
+        width: 220px;
+        height: 60px;
+        background: #e91e63;
+        border-radius: 12px;
+        transition: transform 1s ease;
+        z-index: 2;
+      }
+
+      .gift-box.open .lid {
+        transform: translateY(-120px) rotate(-15deg);
+      }
+
+      .message {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: transparent;
+        color: #333;
+        font-size: 18px;
+        text-align: center;
+        padding: 20px;
+        opacity: 0;
+        transition: all 1s ease;
+        z-index: 1;
+      }
+
+      .gift-box.open .message {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+
+      #card-message {
+        display: inline-block;
+        padding: 20px 25px;
+        background: rgba(255, 182, 193, 0.9);
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        line-height: 1.6;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
+
+      /* Hati */
+      .hearts {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      .heart {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: red;
+        transform: rotate(45deg);
+        animation: float 4s linear infinite;
+      }
+
+      .heart::before,
+      .heart::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: red;
+        border-radius: 50%;
+      }
+
+      .heart::before {
+        top: -10px;
+        left: 0;
+      }
+
+      .heart::after {
+        left: -10px;
+        top: 0;
+      }
+
+      /* Balon kiri & kanan */
+      .balloon {
+        position: absolute;
+        bottom: -150px;
+        width: 60px;
+        height: 80px;
+        background: aqua;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        animation: fly 8s linear infinite;
+      }
+
+      .balloon::after {
+        content: "";
+        position: absolute;
+        top: 80px;
+        left: 28px;
+        width: 4px;
+        height: 50px;
+        background: #666;
+      }
+
+      .balloon.left {
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .balloon.right {
+        right: 10%;
+        animation-delay: 4s;
+      }
+      /* <!-- Tambahkan ini di dalam <style> setelah bagian .balloon dan .heart --> */
+
+      /* Bunga */
+      .flower {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        animation: floatFlower 8s linear infinite;
+      }
+
+      @keyframes floatFlower {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-50px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fly {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-120vh) scale(1.1);
+          opacity: 0;
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-200px) scale(0);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Tombol Musik -->
+    <button
+      id="music-toggle"
+      style="
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.7);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      "
+    >
+      🔇
+    </button>
+
+    <!-- audio Cornfield Chase (versi bebas lisensi) -->
+    <audio id="bg-music" loop autoplay muted>
+      <source
+        src="instrumental-acoustic-guitar-music-401434.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <!-- Balon -->
+    <div class="balloon left"></div>
+    <div class="balloon right"></div>
+
+    <!-- Kado -->
+    <div class="gift-box" id="gift">
+      <div class="lid"></div>
+      <div class="message">
+        Untukmu, My sunshine who give shine to me in the darkness life.
+        <div id="card-message">
+          🎉 Semoga dengan bertambahnya usia, hidupmu dikelilingi keberkahan,
+          kesehatan, dan kebahagiaan tanpa henti 💖
+        </div>
+      </div>
+      <div class="hearts" id="hearts"></div>
+    </div>
+
+    <script>
+      const gift = document.getElementById("gift");
+      const heartsContainer = document.getElementById("hearts");
+      const music = document.getElementById("bg-music");
+      const musicToggle = document.getElementById("music-toggle");
+
+      let sudahMain = false;
+
+      // klik kado
+      gift.addEventListener("click", () => {
+        gift.classList.toggle("open");
+
+        if (gift.classList.contains("open")) {
+          if (!sudahMain) {
+            // musik otomatis nyala saat pertama kali kado dibuka
+            music.muted = false;
+            music
+              .play()
+              .then(() => {
+                sudahMain = true;
+                musicToggle.textContent = "🔊";
+              })
+              .catch((err) => console.log("Autoplay gagal:", err));
+          }
+          for (let i = 0; i < 20; i++) {
+            createHeart();
+          }
+        }
+      });
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = Math.random() * 200 - 100 + "px";
+        heart.style.top = Math.random() * 20 - 10 + "px";
+        heart.style.background = getRandomColor();
+        heart.style.animationDuration = 2 + Math.random() * 3 + "s";
+        heartsContainer.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 4000);
+      }
+
+      function getRandomColor() {
+        const colors = ["#ff4d6d", "#ff9a8b", "#ffdde1", "#ff4081", "#ff9a8b"];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+    </script>
+  </body>
+</html>
